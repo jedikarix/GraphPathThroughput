@@ -6,7 +6,7 @@ import networkx as nx
 
 def load_graphs_from_file(filename: str) -> List[nx.Graph]:
     with open(filename) as file:
-        graphs_filenames = file.readlines()
+        graphs_filenames = file.read().splitlines()
     return [nx.read_edgelist(graph_filename) for graph_filename in graphs_filenames]
 
 

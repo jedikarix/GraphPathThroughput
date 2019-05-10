@@ -31,7 +31,6 @@ def pipeline(graphs_list: Union[Generator, List[Union[str, nx.Graph]], str],
         raise Exception("graphs_list should be filename or list")
     results = run_algorithm(graphs, algorithm)
     process_results(results)
-    pass
 
 
 def run_algorithm(graphs: Union[Generator, List[nx.Graph]],
@@ -46,4 +45,5 @@ def run_algorithm(graphs: Union[Generator, List[nx.Graph]],
 
 
 def process_results(results):
-    pass
+    for result in results:
+        print('time: {}\tout: {}'.format(result[0], result[1]))

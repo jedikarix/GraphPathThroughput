@@ -30,7 +30,7 @@ def load_graphs(graphs: List[Union[str, nx.Graph]]) -> List[nx.Graph]:
 
 
 def pipeline(graphs_list: Union[Generator, List[Union[str, nx.Graph]], str],
-             algorithm: Callable[[nx.Graph], Any],
+             algorithm: Callable[[nx.Graph, ...], Any],
              expected_results: List[Any] = None,
              verifying_function: Callable[[Any, Any], bool] = None) -> None:
     """
@@ -57,7 +57,7 @@ def pipeline(graphs_list: Union[Generator, List[Union[str, nx.Graph]], str],
 
 
 def run_algorithm(graphs: Union[Generator, List[nx.Graph]],
-                  algorithm: Callable[[nx.Graph], Any]) -> List[Tuple[float, Any]]:
+                  algorithm: Callable[[nx.Graph, ...], Any]) -> List[Tuple[float, Any]]:
     """
     Calls algorithm from graphs from list or generator. Measures execution time.
     :param graphs: List of graphs or graphs generator

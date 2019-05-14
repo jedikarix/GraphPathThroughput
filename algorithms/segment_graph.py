@@ -58,7 +58,10 @@ def segment_graph(G: nx.Graph) -> nx.Graph:
                 E.append((a, segment_label))
 
     H = nx.Graph()
-    H.add_nodes_from(list(art_points) + list(segments_dict.keys()))
+    H.add_nodes_from(list(art_points), articulation=True)
+    H.add_nodes_from(list(segments_dict.keys()), articulation=False)
     H.add_edges_from(E)
+
     nx.set_node_attributes(H, segments_dict, 'segment')
+
     return H

@@ -1,4 +1,4 @@
-from typing import Dict, Tuple
+from typing import Dict, List, Tuple
 
 import networkx as nx
 
@@ -54,3 +54,11 @@ def low(G: nx.Graph, root) -> Tuple[Dict[int, int], nx.Graph]:
         low_map[v] = min(v_children_low + v_sec_dep + [v_dep])
 
     return low_map, T
+
+
+def path_from_list(node_list: List[int]) -> nx.Graph():
+    P = nx.Graph()
+    P.add_nodes_from(node_list)
+    edges = [(i, j) for i, j in zip(node_list[:-1], node_list[1:])]
+    P.add_edges_from(edges)
+    return P

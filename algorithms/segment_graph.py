@@ -5,9 +5,9 @@ from algorithms.utils import low
 
 def segment_graph(G: nx.Graph) -> nx.Graph:
     """
-    Generate graph
-    :param G:
-    :return:
+    Generate graph of segments of G. Segments are linked with articulation points
+    :param G: base Graph
+    :return: graph H with segments and articulation points from G
     """
     segments = list([set()])
     art_points = set()

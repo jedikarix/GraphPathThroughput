@@ -6,6 +6,13 @@ from algorithms.available_subgraph import available_subgraph
 
 
 def max_throughput_path(G: nx.Graph, s: int, t: int) -> Tuple[List[int], int]:
+    """
+    Finds path between s and t nodes with maximal throughput
+    :param G: input graph
+    :param s: source node
+    :param t: target node
+    :return: tuple (path, throughput)
+    """
     G_a = nx.Graph(available_subgraph(G, s, t))
 
     throughput = nx.get_edge_attributes(G_a, 'throughput')

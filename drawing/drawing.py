@@ -5,6 +5,14 @@ from algorithms.available_subgraph import available_subgraph
 
 
 def draw_weighted_graph(G: nx.Graph, edge_attr='throughput', path=None, pos=None):
+    """
+    Draw graph with weight on edges
+    :param G: graph
+    :param edge_attr: attribute name
+    :param path: path in graph to mark
+    :param pos: position of nodes
+    :return: generated position of nodes
+    """
     if pos is None:
         pos = nx.spring_layout(G)
     edge_cmap = ['k' for _ in G.edges()]
@@ -17,6 +25,13 @@ def draw_weighted_graph(G: nx.Graph, edge_attr='throughput', path=None, pos=None
 
 
 def draw_segment_graph(G: nx.Graph, segment_color='red', art_color='green'):
+    """
+    Draw G segment graph
+    :param G:
+    :param segment_color:
+    :param art_color:
+    :return:
+    """
     colors = list()
     articulation = nx.get_node_attributes(G, 'articulation')
     for node in G.nodes():
@@ -25,6 +40,15 @@ def draw_segment_graph(G: nx.Graph, segment_color='red', art_color='green'):
 
 
 def draw_available_subgraph(G: nx.Graph, s: int, t: int, remove_rest: bool = False, pos=None):
+    """
+    Draw available subgraph of G for path from s to t.
+    :param G: graph
+    :param s: source node
+    :param t: target node
+    :param remove_rest: if True draw whole G graph with marked subgraph, otherwise draw only subgraph
+    :param pos: nodes position
+    :return:
+    """
     if pos is None:
         pos = nx.spring_layout(G)
     H = available_subgraph(G, s, t)

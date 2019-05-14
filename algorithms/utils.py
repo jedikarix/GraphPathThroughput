@@ -57,6 +57,11 @@ def low(G: nx.Graph, root) -> Tuple[Dict[int, int], nx.Graph]:
 
 
 def path_from_list(node_list: List[int]) -> nx.Graph():
+    """
+    Generate path graph based on list of nodes
+    :param node_list:
+    :return: path graph
+    """
     P = nx.Graph()
     P.add_nodes_from(node_list)
     edges = [(i, j) for i, j in zip(node_list[:-1], node_list[1:])]

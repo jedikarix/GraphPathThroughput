@@ -56,9 +56,9 @@ def low(G: nx.Graph, root) -> Tuple[Dict[int, int], nx.Graph]:
     return low_map, T
 
 
-def path_from_list(node_list: List[int]) -> nx.Graph():
+def path_from_list(node_list: List[int]) -> nx.Graph:
     """
-    Generate path graph based on list of nodes
+    Generates path graph based on list of nodes
     :param node_list:
     :return: path graph
     """
@@ -67,3 +67,18 @@ def path_from_list(node_list: List[int]) -> nx.Graph():
     edges = [(i, j) for i, j in zip(node_list[:-1], node_list[1:])]
     P.add_edges_from(edges)
     return P
+
+
+def filter_null_edges(G: nx.Graph, attr_name='throughput', threshold=0) -> nx.Graph:
+    """
+    Removes edges with attribute value below given threshold (default 0)
+    :param G: graph
+    :param attr_name: attribute name
+    :param threshold:
+    :return: Graph with filtered edges
+    """
+    weights = nx.get_edge_attributes(G, attr_name)
+    for e in G.edges():
+        if weights[e] <= threshold:
+            G.remove_edge(*e)
+    return G

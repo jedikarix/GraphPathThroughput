@@ -9,23 +9,33 @@ def segment_graph(G: nx.Graph) -> nx.Graph:
     :param G: base Graph
     :return: graph H with segments and articulation points from G
     """
-    segments = list([set()])
+    segments = list()
     art_points = set()
     curr_seg = 0
     max_seg = 0
     root = list(G.nodes())[0]
     v_low, T = low(G, root)
     depth = nx.get_node_attributes(T, 'depth')
-    v_stack = [root]
     v_seg = dict()
     for v in list(G.nodes()):
         v_seg[v] = list()
 
-    v_seg[root] = [curr_seg]
-    segments[curr_seg].add(root)
-
     if len(list(T.neighbors(root))) >= 0:
         art_points.add(root)
+        for child in list(T.neighbors(root)):
+            max_seg += 1
+            segments.append(set())
+
+            v_seg[root].append(max_seg-1)
+            segments[max_seg-1].add(root)
+
+            v_seg[child].append(max_seg-1)
+            segments[max_seg-1].add(child)
+    else:
+        v_seg[root] = [curr_seg]
+        segments[curr_seg].add(root)
+
+    v_stack = list(T.neighbors(root))
 
     while len(v_stack) > 0:
         curr = v_stack.pop()
@@ -38,11 +48,11 @@ def segment_graph(G: nx.Graph) -> nx.Graph:
                 max_seg += 1
                 segments.append(set())
 
-                v_seg[curr].append(max_seg)
-                segments[max_seg].add(curr)
+                v_seg[curr].append(max_seg-1)
+                segments[max_seg-1].add(curr)
 
-                v_seg[child].append(max_seg)
-                segments[max_seg].add(child)
+                v_seg[child].append(max_seg-1)
+                segments[max_seg-1].add(child)
             else:
                 v_seg[child].append(curr_seg)
                 segments[curr_seg].add(child)

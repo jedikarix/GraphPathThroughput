@@ -42,6 +42,9 @@ def low(G: nx.Graph, root) -> Tuple[Dict[int, int], nx.Graph]:
     low_map = dict()
 
     T = build_dfs_tree(G, root)
+
+    G.remove_nodes_from(set(G.nodes()) - set(T.nodes))
+
     depth = nx.get_node_attributes(T, "depth")
     T_nodes = sorted(list(T.nodes()), reverse=True, key=lambda v: depth[v])
     T_ud = T.to_undirected()

@@ -61,7 +61,7 @@ def generate_all_edges(num_of_ver : int, index : int = 0) -> List[Tuple[int, int
 def generate_complex_graph(max_num_of_sub_ver: int, min_weight: int = 1, max_weight: int = 10) -> nx.Graph:
     """
     Generate complex graph
-    :param num_of_ver: max number of vertices in subgraph
+    :param max_num_of_sub_ver: max number of vertices in subgraph
     :param min_weight: min weight of edge
     :param max_weight: max weight of edge
     :return: new created graph
@@ -85,6 +85,8 @@ def generate_complex_graph(max_num_of_sub_ver: int, min_weight: int = 1, max_wei
         graph.add_nodes_from(range(num_of_ver + 1, num_of_ver + 1 + num_of_sub_ver))
 
         all_edges = generate_all_edges(num_of_sub_ver, num_of_ver)
+        all_edges.append((random.randint(1, num_of_ver), random.randint(num_of_ver + 1, num_of_ver + num_of_sub_ver + 1)))
+
         weight_edges = list()
         for ge in all_edges:
             weight_edges.append((ge[0], ge[1], random.randint(min_weight, max_weight)))

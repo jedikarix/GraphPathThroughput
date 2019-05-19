@@ -105,5 +105,9 @@ def path_with_edge(G: nx.Graph, s:int, t:int, edge:Tuple[int,int]) -> List[int]:
         path_a = nx.shortest_path(G, s, edge[0])
         path_b = nx.shortest_path(G, edge[1], t)
         path = path_a + path_b
+        if len(set(path)) != len(path):
+            path_a = nx.shortest_path(G, s, edge[1])
+            path_b = nx.shortest_path(G, edge[0], t)
+            path = path_a + path_b
 
     return path

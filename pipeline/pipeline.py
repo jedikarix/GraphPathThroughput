@@ -24,7 +24,7 @@ def load_graphs(graphs: List[Union[str, nx.Graph]]) -> List[nx.Graph]:
     loaded_graphs = list()
     for graph in graphs:
         if isinstance(graph, str):
-            graph = nx.read_edgelist(graph)
+            graph = nx.read_edgelist(graph, nodetype=int)
         loaded_graphs.append(graph)
     return loaded_graphs
 

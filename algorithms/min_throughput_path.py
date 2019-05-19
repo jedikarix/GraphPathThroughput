@@ -21,11 +21,11 @@ def min_throughput_path(G: nx.Graph, s: int, t: int, remove_null:bool = True, at
     if not nx.has_path(G, s, t):
         raise Exception("There is not path between s and t")
 
-    G_a = available_subgraph(G, s, t)
+    G_a = nx.Graph(available_subgraph(G, s, t))
 
     edges = G_a.edges()
     throughputs = nx.get_edge_attributes(G_a, attr_name)
-    print(throughputs)
+
     min_edge = None
     min_throughput = float('inf')
     for e in edges:
@@ -33,6 +33,9 @@ def min_throughput_path(G: nx.Graph, s: int, t: int, remove_null:bool = True, at
             min_edge = e
             min_throughput = throughputs[e]
 
+    G_a.remove_edge(*min_edge)
     path = path_with_edge(G_a, s, t, min_edge)
+
+    print("path:\t", path)
 
     return path, min_throughput

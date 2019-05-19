@@ -89,3 +89,8 @@ def generate_complex_graph(n_v: int, max_num_of_sub_ver: int, min_weight: int = 
         graph[e[0]][e[1]]['weight'] = random.randint(min_weight, max_weight)
 
     return graph
+
+
+def complex_generator_wrapper(ns: List[int], max_num_of_sub_ver: int, max_weight: int):
+    for n in ns:
+        yield generate_complex_graph(n, max_num_of_sub_ver, max_weight=max_weight)

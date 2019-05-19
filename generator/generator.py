@@ -58,40 +58,39 @@ def generate_all_edges(num_of_ver : int, index : int = 0) -> List[Tuple[int, int
     return edges
 
 
-def generate_complex_graph(max_num_of_sub_ver: int, min_weight: int = 1, max_weight: int = 10) -> nx.Graph:
+def generate_complex_graph(n_v: int, max_num_of_sub_ver: int, min_weight: int = 1, max_weight: int = 10) -> nx.Graph:
     """
     Generate complex graph
+    :param n_v: number of nodes
     :param max_num_of_sub_ver: max number of vertices in subgraph
     :param min_weight: min weight of edge
     :param max_weight: max weight of edge
     :return: new created graph
     """
     num_of_sub_ver = max_num_of_sub_ver
-    graph = nx.Graph()
-    graph.add_nodes_from(range(1, num_of_sub_ver + 1))
-
-    all_edges = generate_all_edges(num_of_sub_ver)
-
-    weight_edges = list()
-    for ge in all_edges:
-        weight_edges.append((ge[0], ge[1], random.randint(min_weight, max_weight)))
-
-    graph.add_weighted_edges_from(weight_edges)
+    graph = nx.complete_graph(num_of_sub_ver)
 
     num_of_ver = num_of_sub_ver
 
-    while random.randint(1, 5) != 1:
-        num_of_sub_ver = random.randint(1, max_num_of_sub_ver)
-        graph.add_nodes_from(range(num_of_ver + 1, num_of_ver + 1 + num_of_sub_ver))
+    while num_of_ver < n_v - 2:
+        num_of_sub_ver = min(random.randint(5, max_num_of_sub_ver), n_v - num_of_ver)
 
-        all_edges = generate_all_edges(num_of_sub_ver, num_of_ver)
-        all_edges.append((random.randint(1, num_of_ver), random.randint(num_of_ver + 1, num_of_ver + num_of_sub_ver + 1)))
+        subgraph = nx.connected_watts_strogatz_graph(num_of_sub_ver, min(5, num_of_sub_ver - 1), 1.0)
 
-        weight_edges = list()
-        for ge in all_edges:
-            weight_edges.append((ge[0], ge[1], random.randint(min_weight, max_weight)))
+        graph = nx.disjoint_union(graph, subgraph)
 
-        graph.add_weighted_edges_from(weight_edges)
-        num_of_ver += num_of_sub_ver
+        rand = random.randint(0, num_of_ver - 1)
+        nx.relabel_nodes(graph, dict([(max(graph.nodes()), rand)]), copy=False)
+        # graph.add_edge(random.randint(0, num_of_ver - 1), random.randint(num_of_ver, num_of_ver + num_of_sub_ver - 1))
+
+        num_of_ver += num_of_sub_ver - 1
+
+    for e in graph.edges():
+        graph[e[0]][e[1]]['weight'] = random.randint(min_weight, max_weight)
 
     return graph
+
+
+def complex_generator_wrapper(ns: List[int], max_num_of_sub_ver: int, max_weight: int):
+    for n in ns:
+        yield generate_complex_graph(n, max_num_of_sub_ver, max_weight=max_weight)

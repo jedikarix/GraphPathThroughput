@@ -30,9 +30,9 @@ def load_graphs(graphs: List[Union[str, nx.Graph]]) -> List[nx.Graph]:
 
 
 def pipeline(graphs_list: Union[Generator, List[Union[str, nx.Graph]], str],
-             algorithm: Callable[[nx.Graph, ...], Any],
+             algorithm,
              expected_results: List[Any] = None,
-             verifying_function: Callable[[Any, Any], bool] = None) -> None:
+             verifying_function: Callable[[Any, Any], bool] = None, **kwargs) -> None:
     """
     Main pipeline of application. Answers for experiments execution. Loads data, collect algorithm testing results and
      put it for results processing function.
@@ -43,6 +43,7 @@ def pipeline(graphs_list: Union[Generator, List[Union[str, nx.Graph]], str],
     :param algorithm: Tested algorithm function. Should take nx.Graph as argument
     :param expected_results: list with expected algorithm result for consecutive graphs from graphs_list
     :param verifying_function: function determining result correctness if desired_result provided
+    :param kwargs: algorithm parameters
     """
     if isinstance(graphs_list, str):
         graphs = load_graphs_from_file(graphs_list)
@@ -52,12 +53,12 @@ def pipeline(graphs_list: Union[Generator, List[Union[str, nx.Graph]], str],
         graphs = graphs_list
     else:
         raise Exception("graphs_list should be filename or list")
-    results = run_algorithm(graphs, algorithm)
+    results = run_algorithm(graphs, algorithm, **kwargs)
     process_results(results, expected_results=expected_results, verifying_function=verifying_function)
 
 
 def run_algorithm(graphs: Union[Generator, List[nx.Graph]],
-                  algorithm: Callable[[nx.Graph, ...], Any]) -> List[Tuple[float, Any]]:
+                  algorithm, **kwargs) -> List[Tuple[float, Any]]:
     """
     Calls algorithm from graphs from list or generator. Measures execution time.
     :param graphs: List of graphs or graphs generator
@@ -67,7 +68,7 @@ def run_algorithm(graphs: Union[Generator, List[nx.Graph]],
     results = list()
     for graph in graphs:
         t0 = time.clock()
-        alg_result = algorithm(graph)
+        alg_result = algorithm(graph, **kwargs)
         dt = time.clock() - t0
         results.append((dt, alg_result))
     return results
@@ -90,14 +91,13 @@ def process_results(results: List[Tuple[float, Any]], print_results=True,
         if verifying_function is None:
             def verifying_function(x, y):
                 return x == y
-        print(results)
-        print(expected_results)
         success_list = [verifying_function(result[1], expected) for result, expected in zip(results, expected_results)]
+
+        if print_results:
+            for result, expected, success in zip(results, expected_results, success_list):
+                print('time: {}\tout: {}\texpected: {}\tsuccess: {}'.format(result[0], result[1], expected, success))
+
     else:
-        success_list = [None] * len(results)
-
-    if print_results:
-        for result, expected, success in zip(results, expected_results, success_list):
-            print('time: {}\tout: {}\texpected: {}\tsuccess: {}'.format(result[0], result[1], expected, success))
-
-    return success_list
+        if print_results:
+            for result in zip(results):
+                print('time: {}\tout: {}'.format(result[0], result[1]))

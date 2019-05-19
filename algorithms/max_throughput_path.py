@@ -3,7 +3,7 @@ from typing import Tuple, List
 import networkx as nx
 
 from algorithms.available_subgraph import available_subgraph
-from algorithms.utils import filter_null_edges
+from algorithms.utils import filter_null_edges, path_with_edge
 
 
 def max_throughput_path(G: nx.Graph, s: int, t: int, remove_null:bool = True, attr_name="throughput") -> Tuple[List[int], int]:
@@ -36,7 +36,6 @@ def max_throughput_path(G: nx.Graph, s: int, t: int, remove_null:bool = True, at
             min_throughput = throughput[e]
             break
 
-    path_a = nx.shortest_path(G, s, min_edge[0])
-    path_b = nx.shortest_path(G, min_edge[1], t)
+    path = path_with_edge(G_a, s, t, min_edge)
 
-    return path_a + path_b, min_throughput
+    return path, min_throughput

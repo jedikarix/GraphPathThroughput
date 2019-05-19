@@ -85,3 +85,25 @@ def filter_null_edges(G: nx.Graph, attr_name='throughput', threshold=0) -> nx.Gr
         if weights[e] <= threshold:
             G.remove_edge(*e)
     return G
+
+
+def path_with_edge(G: nx.Graph, s:int, t:int, edge:Tuple[int,int]) -> List[int]:
+
+    edge = sorted(edge, reverse=s > t)
+
+    if (s, t) == edge:
+        path = [edge]
+    elif s in edge:
+        edge.remove(s)
+        path_b = nx.shortest_path(G, edge[0], t)
+        path = [s] + path_b
+    elif t in edge:
+        edge.remove(t)
+        path_a = nx.shortest_path(G, s, edge[0])
+        path = path_a + [t]
+    else:
+        path_a = nx.shortest_path(G, s, edge[0])
+        path_b = nx.shortest_path(G, edge[1], t)
+        path = path_a + path_b
+
+    return path

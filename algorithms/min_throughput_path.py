@@ -6,7 +6,7 @@ from algorithms.available_subgraph import available_subgraph
 from algorithms.utils import filter_null_edges
 
 
-def min_throughput_path(G: nx.Graph, s: int, t: int, remove_null:bool = True) -> Tuple[List[int], int]:
+def min_throughput_path(G: nx.Graph, s: int, t: int, remove_null:bool = True, attr_name="throughput") -> Tuple[List[int], int]:
     """
     Finds path between s and t nodes with minimal throughput
     :param G: input graph
@@ -24,7 +24,7 @@ def min_throughput_path(G: nx.Graph, s: int, t: int, remove_null:bool = True) ->
     G_a = available_subgraph(G, s, t)
 
     edges = G_a.edges()
-    throughputs = nx.get_edge_attributes(G_a, "throughput")
+    throughputs = nx.get_edge_attributes(G_a, attr_name)
     print(throughputs)
     min_edge = None
     min_throughput = float('inf')

@@ -9,7 +9,7 @@ def generate_graph(num_of_ver: int, num_of_edg: int,
     """
     Generate graph
     :param num_of_ver: number of vertices
-    :param num_of_edg: numver of edges
+    :param num_of_edg: number of edges
     :param min_weight: min weight of edge
     :param max_weight: max weight of edge
     :return: new created graph
@@ -42,14 +42,54 @@ def save_graph(graph: nx.Graph, filename : str) -> None:
     return
 
 
-def generate_all_edges(num_of_ver : int) -> List[Tuple[int, int]]:
+def generate_all_edges(num_of_ver : int, index : int = 0) -> List[Tuple[int, int]]:
     """
     Generate all possible edges for a graph with very number of vertices
     :param num_of_ver: number of vertices
+    :param index: index of shift
     :return: list of possible edges
     """
     edges = list()
-    for a in range(1, num_of_ver + 1):
-        for b in range(a + 1, num_of_ver + 1):
+    for a in range(index + 1, num_of_ver + 1 + index):
+        r = range(a + 1, num_of_ver + 1 + index)
+        for b in r:
             edges.append((a, b))
+
     return edges
+
+
+def generate_complex_graph(max_num_of_sub_ver: int, min_weight: int = 1, max_weight: int = 10) -> nx.Graph:
+    """
+    Generate complex graph
+    :param num_of_ver: max number of vertices in subgraph
+    :param min_weight: min weight of edge
+    :param max_weight: max weight of edge
+    :return: new created graph
+    """
+    num_of_sub_ver = max_num_of_sub_ver
+    graph = nx.Graph()
+    graph.add_nodes_from(range(1, num_of_sub_ver + 1))
+
+    all_edges = generate_all_edges(num_of_sub_ver)
+
+    weight_edges = list()
+    for ge in all_edges:
+        weight_edges.append((ge[0], ge[1], random.randint(min_weight, max_weight)))
+
+    graph.add_weighted_edges_from(weight_edges)
+
+    num_of_ver = num_of_sub_ver
+
+    while random.randint(1, 5) != 1:
+        num_of_sub_ver = random.randint(1, max_num_of_sub_ver)
+        graph.add_nodes_from(range(num_of_ver + 1, num_of_ver + 1 + num_of_sub_ver))
+
+        all_edges = generate_all_edges(num_of_sub_ver, num_of_ver)
+        weight_edges = list()
+        for ge in all_edges:
+            weight_edges.append((ge[0], ge[1], random.randint(min_weight, max_weight)))
+
+        graph.add_weighted_edges_from(weight_edges)
+        num_of_ver += num_of_sub_ver
+
+    return graph

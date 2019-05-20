@@ -1,4 +1,4 @@
-from typing import Dict, Set
+from typing import Dict, Set, List, Tuple
 
 import networkx as nx
 
@@ -27,7 +27,7 @@ def node_segment(node: int, segments: Dict[int, Set], art_dict: Dict[int, bool])
     return V_node
 
 
-def available_subgraph(G: nx.Graph, s: int, t: int) -> nx.Graph:
+def available_subgraph(G: nx.Graph, s: int, t: int) -> Tuple[nx.Graph, nx.Graph, List[int]]:
     """
     Computes subgraph of G using edges which can be used to build path between s and t nodes
     :param G: input graph
@@ -51,4 +51,4 @@ def available_subgraph(G: nx.Graph, s: int, t: int) -> nx.Graph:
     available_nodes = set(
         [node for segment in segment_path if segment in segments.keys() for node in segments[segment]])
 
-    return G.subgraph(available_nodes)
+    return G.subgraph(available_nodes), H, segment_path

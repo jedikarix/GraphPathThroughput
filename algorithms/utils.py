@@ -1,7 +1,6 @@
 from typing import Dict, List, Tuple
 
 import networkx as nx
-import matplotlib.pyplot as plt
 
 
 def build_dfs_tree(G: nx.Graph, root=None) -> nx.DiGraph:
@@ -89,6 +88,14 @@ def filter_null_edges(G: nx.Graph, attr_name='throughput', threshold=0) -> nx.Gr
 
 
 def path_with_edge(G: nx.Graph, s: int, t: int, edge: Tuple[int, int]) -> List[int]:
+    """
+    Find path in G from s to t passes through given edge. Edge can be not in given graph.
+    :param G: input graph
+    :param s: source node
+    :param t: target node
+    :param edge: edge
+    :return: list of nodes in found path.
+    """
 
     edge = sorted(edge, reverse=s > t)
 

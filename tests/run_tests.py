@@ -1,8 +1,14 @@
 import os
+import time
+import random
+from typing import Tuple
+
 from pipeline.pipeline import load_graphs
-from algorithms.max_throughput_path import max_throughput_path
+from algorithms.max_throughput_path import max_throughput_path, max_throughput_path_opt
+from generator.generator import generate_complex_graph, generate_graph
 from algorithms.min_throughput_path import min_throughput_path
 from drawing.drawing import draw_weighted_graph
+from math import pow, sqrt
 import matplotlib.pyplot as plt
 
 
@@ -67,10 +73,38 @@ def run_unit_tests(dir, s_t_filename, min_max_cap_filename) -> bool:
     return success
 
 
-def run_performance_tests():
-    pass
+def run_performance_tests(num_of_ver: int, max_num_of_sub_ver: int, num_of_rep, algorithm) -> Tuple[float, float]:
+    """
+    Run performance test of algorithm
+    :param num_of_ver: number of vertices
+    :param max_num_of_sub_ver: max number of vertices in subgraph
+    :param num_of_rep: number of repetitions
+    :param algorithm: used algorithm
+    :return: average time and standard deviation
+    """
+    times = []
+    for i in range(num_of_rep):
+        graph = generate_complex_graph(num_of_ver, max_num_of_sub_ver)
+        start = time.time()
+        algorithm(graph, s=random.randint(1, num_of_ver), t=random.randint(1, num_of_ver), attr_name="weight")
+        end = time.time()
+        times.append(start - end)
+
+    avrg = sum(times) / num_of_rep
+    s = 0
+    for t in times:
+        s += pow((avrg - t), 2)
+
+    return avrg, sqrt((s/num_of_rep))
 
 if run_unit_tests('resources/unit_tests/',
                   'resources/s_t_unit_tests',
                   'resources/min_max_cap_unit_tests'):
     print('ALL UNIT TESTS PASSED')
+
+t1 = run_performance_tests(1000, 20, 1, min_throughput_path)
+t2 = run_performance_tests(1000, 20, 1, max_throughput_path)
+t3 = run_performance_tests(1000, 20, 1, max_throughput_path_opt)
+print('wynik: ' + str(t1[0]) + ' ' + str(t1[1]))
+print('wynik: ' + str(t2[0]) + ' ' + str(t2[1]))
+print('wynik: ' + str(t3[0]) + ' ' + str(t3[1]))

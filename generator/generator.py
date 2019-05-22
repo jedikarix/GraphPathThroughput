@@ -58,7 +58,7 @@ def generate_all_edges(num_of_ver : int, index : int = 0) -> List[Tuple[int, int
     return edges
 
 
-def generate_complex_graph(n_v: int, max_num_of_sub_ver: int, min_weight: int = 1, max_weight: int = 10) -> nx.Graph:
+def generate_complex_graph(n_v: int, max_num_of_sub_ver: int, min_weight: int = 1, max_weight: int = 10000) -> nx.Graph:
     """
     Generate complex graph
     :param n_v: number of nodes

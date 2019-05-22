@@ -18,7 +18,8 @@ def max_throughput_path(G: nx.Graph, s: int, t: int, attr_name="throughput") -> 
     if not nx.has_path(G, s, t):
         raise Exception("There is not path between s and t")
 
-    G_a = nx.Graph(available_subgraph(G, s, t))
+    G_a, _, _ = available_subgraph(G, s, t)
+    G_a = nx.Graph(G_a)
 
     throughput = nx.get_edge_attributes(G_a, attr_name)
     edges = sorted(G_a.edges(), key=lambda e: throughput[e])

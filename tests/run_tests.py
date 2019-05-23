@@ -94,7 +94,7 @@ def run_performance_tests(num_of_ver: int, max_num_of_sub_ver: int,
     for i in range(num_of_graphs):
         print("Start graph {} generation".format(i+1))
         graph = generate_complex_graph(num_of_ver, max_num_of_sub_ver)
-        print("Graph {} generated".format(i+1))
+
         for j in range(num_of_pairs):
             s = random.randint(0, len(graph.nodes()) - 1)
             t = random.randint(0, len(graph.nodes()) - 1)
@@ -110,6 +110,28 @@ def run_performance_tests(num_of_ver: int, max_num_of_sub_ver: int,
         s += pow((avrg - t), 2)
 
     return avrg, sqrt((s/len(times)))
+
+
+class ExperimentGraphs:
+    def __init__(self, n, nodes, segment_nodes):
+        self.nodes = nodes
+        self.segment_nodes = segment_nodes
+        self.graphs = [None] * n
+        self.n = n
+
+    def __getitem__(self, i):
+        if i < 0:
+            i += self.n
+        if 0 <= i < self.n:
+            if self.graphs[i] is None:
+                print("Start graph {} generation".format(i+1))
+                self.graphs[i] = generate_complex_graph(self.nodes, self.segment_nodes)
+                print("Graph {} generated".format(i + 1))
+            return self.graphs[i]
+        raise IndexError('Index out of range: {}'.format(i))
+
+    def __len__(self):
+        return self.n
 
 
 if __name__ == "__main__":

@@ -92,9 +92,10 @@ def run_performance_tests(graphs, num_of_pairs: int,
     times = []
     for i in range(len(graphs)):
         for j in range(num_of_pairs):
-            s = random.randint(0, len(graphs[i].nodes()) - 1)
-            t = random.randint(0, len(graphs[i].nodes()) - 1)
+            s, t = tuple(random.sample(range(len(graphs[i].nodes())), 2))
+
             start = time.time()
+
             algorithm(graphs[i], s=s, t=t, attr_name="weight")
             end = time.time()
             times.append(end - start)
@@ -120,9 +121,7 @@ class ExperimentGraphs:
             i += self.n
         if 0 <= i < self.n:
             if self.graphs[i] is None:
-                print("Start graph {} generation".format(i+1))
                 self.graphs[i] = generate_complex_graph(self.nodes, self.segment_nodes)
-                print("Graph {} generated".format(i + 1))
             return self.graphs[i]
         raise IndexError('Index out of range: {}'.format(i))
 
@@ -130,15 +129,29 @@ class ExperimentGraphs:
         return self.n
 
 
-if __name__ == "__main__":
-    if run_unit_tests('resources/unit_tests/',
-                      'resources/s_t_unit_tests',
-                      'resources/min_max_cap_unit_tests'):
-        print('ALL UNIT TESTS PASSED')
+def run_tests_set(ns, ss, algorithms, rep, pairs):
 
-    t1 = run_performance_tests(1000, 20, 1, min_throughput_path)
-    t2 = run_performance_tests(1000, 20, 1, max_throughput_path)
-    t3 = run_performance_tests(1000, 20, 1, max_throughput_path_opt)
-    print('wynik: ' + str(t1[0]) + ' ' + str(t1[1]))
-    print('wynik: ' + str(t2[0]) + ' ' + str(t2[1]))
-    print('wynik: ' + str(t3[0]) + ' ' + str(t3[1]))
+    results = dict()
+
+    for n in ns:
+        for s in ss:
+            if s > n:
+                break
+            graphs = ExperimentGraphs(rep, n, s)
+            for alg in algorithms:
+                time = run_performance_tests(graphs, pairs, alg)
+                print("nodes: {}\tsegment size:{}\talgorithm:{}\t->\ttime:{}".format(n, s, alg, time))
+                results[(n, s, alg)] = time
+
+    return results
+
+
+if __name__ == "__main__":
+
+    ns = [100, 330, 1000, 3300, 10000]
+    ss = [10, 33, 100, 330, 1000, 3300, 10000]
+    algorithms = [min_throughput_path, max_throughput_path, max_throughput_path_opt]
+    rep = 10
+    pairs = 50
+
+    run_tests_set(ns, ss, algorithms, rep, pairs)

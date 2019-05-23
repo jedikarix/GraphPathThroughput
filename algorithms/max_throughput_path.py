@@ -136,3 +136,71 @@ def max_throughput_path_opt(G: nx.Graph, s: int, t: int,
     path = path_with_edge(G_a, s, t, min_edge)
 
     return path, min_throughput
+
+
+def path_to_edges(path: List[int]):
+    """
+    Produce list of edges for sequence of nodes
+    :param path: sequence of nodes in path
+    :return: list of edges in path
+    """
+    return [(path[i], path[i+1]) for i in range(len(path)-1)]
+
+
+def max_throughput_path_opt2(G: nx.Graph, s: int, t: int,
+                             remove_null:bool = False, attr_name="throughput") -> Tuple[List[int], int]:
+    """
+    Finds path between s and t nodes with maximal throughput. Using optimization for checking
+    connection between source and target.
+    :param G: input graph
+    :param s: source node
+    :param t: target node
+    :return: tuple (path, throughput)
+    """
+
+    if remove_null:
+        G = filter_null_edges(G)
+
+    if not nx.has_path(G, s, t):
+        raise Exception("There is not path between s and t")
+    if s == t:
+        raise Exception("Source and target are the same node")
+
+    G_a, H, seg_path = available_subgraph(G, s, t)
+
+    segments = nx.get_node_attributes(H, "segment")
+    art_points_H = nx.get_node_attributes(H, "articulation")
+
+    art_points = [node for node in G_a.nodes() if art_points_H.get(node, False)]
+    seg_path = [seg for seg in seg_path if seg in segments.keys()]
+
+    G_a = nx.Graph(G_a)
+
+    throughput = nx.get_edge_attributes(G_a, attr_name)
+    edges = sorted(G_a.edges(), key=lambda e: throughput[e])
+
+    e_seg = edges_segments(G_a, segments, seg_path)
+    seg_gates = segments_gates(seg_path, segments, art_points, s, t)
+
+    min_edge = None
+    min_throughput = 0
+
+    seg_paths = [None] * len(seg_gates)
+
+    for e in edges:
+        G_a.remove_edge(*e)
+        seg = e_seg.get(e, None)
+        if seg is None:
+            seg = e_seg[(e[1], e[0])]
+        gates = seg_gates[seg]
+        if seg_paths[seg] is None or e in seg_paths[seg] or (e[1], e[0]) in seg_paths[seg]:
+            try:
+                seg_paths[seg] = path_to_edges(nx.shortest_path(G_a, gates[0], gates[1]))
+            except nx.NetworkXNoPath:
+                min_edge = e
+                min_throughput = throughput[e]
+                break
+
+    path = path_with_edge(G_a, s, t, min_edge)
+
+    return path, min_throughput

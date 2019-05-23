@@ -56,6 +56,9 @@ def run_unit_tests(dir, s_t_filename, min_max_cap_filename) -> bool:
             max_c.append(c)
             if c != max_c[i]:
                 success = False
+                print("Test {}: max_throughput_path - not passed".format(i))
+            else:
+                print("Test {}: max_throughput_path - passed".format(i))
             save(graph, max_path, "weight", "plot_Max{}.png".format(i + 1))
         except Exception as e:
             print('In test ' + str(i) + ': ' + str(e))
@@ -64,6 +67,9 @@ def run_unit_tests(dir, s_t_filename, min_max_cap_filename) -> bool:
             min_c.append(c)
             if c != min_c[i]:
                 success = False
+                print("Test {}: min_throughput_path - not passed".format(i))
+            else:
+                print("Test {}: min_throughput_path - passed".format(i))
             save(graph, min_path, "weight", "plot_Min{}.png".format(i + 1))
         except Exception as e:
             print('In test ' + str(i) + ': ' + str(e))
@@ -97,14 +103,16 @@ def run_performance_tests(num_of_ver: int, max_num_of_sub_ver: int, num_of_rep, 
 
     return avrg, sqrt((s/num_of_rep))
 
-if run_unit_tests('resources/unit_tests/',
-                  'resources/s_t_unit_tests',
-                  'resources/min_max_cap_unit_tests'):
-    print('ALL UNIT TESTS PASSED')
 
-t1 = run_performance_tests(1000, 20, 1, min_throughput_path)
-t2 = run_performance_tests(1000, 20, 1, max_throughput_path)
-t3 = run_performance_tests(1000, 20, 1, max_throughput_path_opt)
-print('wynik: ' + str(t1[0]) + ' ' + str(t1[1]))
-print('wynik: ' + str(t2[0]) + ' ' + str(t2[1]))
-print('wynik: ' + str(t3[0]) + ' ' + str(t3[1]))
+if __name__ == "__main__":
+    if run_unit_tests('resources/unit_tests/',
+                      'resources/s_t_unit_tests',
+                      'resources/min_max_cap_unit_tests'):
+        print('ALL UNIT TESTS PASSED')
+
+    t1 = run_performance_tests(1000, 20, 1, min_throughput_path)
+    t2 = run_performance_tests(1000, 20, 1, max_throughput_path)
+    t3 = run_performance_tests(1000, 20, 1, max_throughput_path_opt)
+    print('wynik: ' + str(t1[0]) + ' ' + str(t1[1]))
+    print('wynik: ' + str(t2[0]) + ' ' + str(t2[1]))
+    print('wynik: ' + str(t3[0]) + ' ' + str(t3[1]))

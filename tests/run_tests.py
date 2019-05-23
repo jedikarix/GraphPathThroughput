@@ -79,7 +79,9 @@ def run_unit_tests(dir, s_t_filename, min_max_cap_filename) -> bool:
     return success
 
 
-def run_performance_tests(num_of_ver: int, max_num_of_sub_ver: int, num_of_rep, algorithm) -> Tuple[float, float]:
+def run_performance_tests(num_of_ver: int, max_num_of_sub_ver: int,
+                          num_of_graphs: int, num_of_pairs: int,
+                          algorithm) -> Tuple[float, float]:
     """
     Run performance test of algorithm
     :param num_of_ver: number of vertices
@@ -89,19 +91,25 @@ def run_performance_tests(num_of_ver: int, max_num_of_sub_ver: int, num_of_rep, 
     :return: average time and standard deviation
     """
     times = []
-    for i in range(num_of_rep):
+    for i in range(num_of_graphs):
+        print("Start graph {} generation".format(i+1))
         graph = generate_complex_graph(num_of_ver, max_num_of_sub_ver)
-        start = time.time()
-        algorithm(graph, s=random.randint(1, num_of_ver), t=random.randint(1, num_of_ver), attr_name="weight")
-        end = time.time()
-        times.append(start - end)
+        print("Graph {} generated".format(i+1))
+        for j in range(num_of_pairs):
+            s = random.randint(0, len(graph.nodes()) - 1)
+            t = random.randint(0, len(graph.nodes()) - 1)
+            start = time.time()
+            algorithm(graph, s=s, t=t, attr_name="weight")
+            end = time.time()
+            times.append(end - start)
 
-    avrg = sum(times) / num_of_rep
+    avrg = sum(times) / len(times)
+
     s = 0
     for t in times:
         s += pow((avrg - t), 2)
 
-    return avrg, sqrt((s/num_of_rep))
+    return avrg, sqrt((s/len(times)))
 
 
 if __name__ == "__main__":

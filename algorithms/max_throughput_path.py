@@ -17,6 +17,8 @@ def max_throughput_path(G: nx.Graph, s: int, t: int, attr_name="throughput") -> 
 
     if not nx.has_path(G, s, t):
         raise Exception("There is not path between s and t")
+    if s == t:
+        raise Exception("Source and target are the same node")
 
     G_a, _, _ = available_subgraph(G, s, t)
     G_a = nx.Graph(G_a)
@@ -98,6 +100,8 @@ def max_throughput_path_opt(G: nx.Graph, s: int, t: int,
 
     if not nx.has_path(G, s, t):
         raise Exception("There is not path between s and t")
+    if s == t:
+        raise Exception("Source and target are the same node")
 
     G_a, H, seg_path = available_subgraph(G, s, t)
 

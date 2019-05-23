@@ -34,6 +34,4 @@ def min_throughput_path(G: nx.Graph, s: int, t: int, attr_name="throughput") -> 
     G_a.remove_edge(*min_edge)
     path = path_with_edge(G_a, s, t, min_edge)
 
-    print("path:\t", path)
-
     return path, min_throughput

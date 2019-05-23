@@ -14,9 +14,6 @@ def node_segment(node: int, segments: Dict[int, Set], art_dict: Dict[int, bool])
     :return:
     """
     V_node = None
-    print(node)
-    print(segments)
-    print(art_dict)
     if art_dict.get(node, False):
         V_node = node
     else:
@@ -47,7 +44,6 @@ def available_subgraph(G: nx.Graph, s: int, t: int) -> Tuple[nx.Graph, nx.Graph,
         raise Exception("Source's segment or target's segment wasn't found")
 
     segment_path = nx.shortest_path(H, V_s, V_t)
-    print(segments)
     available_nodes = set(
         [node for segment in segment_path if segment in segments.keys() for node in segments[segment]])
 

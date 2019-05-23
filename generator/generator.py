@@ -72,10 +72,11 @@ def generate_complex_graph(n_v: int, max_num_of_sub_ver: int, min_weight: int = 
 
     num_of_ver = num_of_sub_ver
 
-    while num_of_ver < n_v - 2:
-        num_of_sub_ver = min(random.randint(5, max_num_of_sub_ver), n_v - num_of_ver)
+    while num_of_ver < n_v:
+        num_of_sub_ver = random.randint(5, max_num_of_sub_ver)
 
-        subgraph = nx.connected_watts_strogatz_graph(num_of_sub_ver, min(5, num_of_sub_ver - 1), 1.0)
+        # subgraph = nx.connected_watts_strogatz_graph(num_of_sub_ver, min(5, num_of_sub_ver - 1), 1.0)
+        subgraph = nx.barabasi_albert_graph(num_of_sub_ver, 4)
 
         graph = nx.disjoint_union(graph, subgraph)
 

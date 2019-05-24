@@ -4,7 +4,7 @@ import random
 from typing import Tuple
 
 from pipeline.pipeline import load_graphs
-from algorithms.max_throughput_path import max_throughput_path, max_throughput_path_opt
+from algorithms.max_throughput_path import max_throughput_path, max_throughput_path_opt, max_throughput_path_opt2
 from generator.generator import generate_complex_graph, generate_graph
 from algorithms.min_throughput_path import min_throughput_path
 from drawing.drawing import draw_weighted_graph
@@ -132,16 +132,18 @@ class ExperimentGraphs:
 def run_tests_set(ns, ss, algorithms, rep, pairs):
 
     results = dict()
-
-    for n in ns:
-        for s in ss:
-            if s > n:
-                break
-            graphs = ExperimentGraphs(rep, n, s)
-            for alg in algorithms:
-                time = run_performance_tests(graphs, pairs, alg)
-                print("nodes: {}\tsegment size:{}\talgorithm:{}\t->\ttime:{}".format(n, s, alg, time))
-                results[(n, s, alg)] = time
+    try:
+        for n in ns:
+            for s in ss:
+                if s > n:
+                    break
+                graphs = ExperimentGraphs(rep, n, s)
+                for alg in algorithms:
+                    time = run_performance_tests(graphs, pairs, alg)
+                    print("nodes: {}\tsegment size:{}\talgorithm:{}\t->\ttime:{}".format(n, s, alg, time))
+                    results[(n, s, alg)] = time
+    except KeyboardInterrupt:
+        return results
 
     return results
 
@@ -151,7 +153,6 @@ if __name__ == "__main__":
     ns = [100, 330, 1000, 3300, 10000]
     ss = [10, 33, 100, 330, 1000, 3300, 10000]
     algorithms = [min_throughput_path, max_throughput_path, max_throughput_path_opt]
-    rep = 10
-    pairs = 50
-
+    rep = 5
+    pairs = 10
     run_tests_set(ns, ss, algorithms, rep, pairs)
